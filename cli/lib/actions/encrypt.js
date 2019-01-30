@@ -4,8 +4,8 @@ const os = require('os');
 const url = require('url');
 const fs = require('fs');
 const request = require('request');
-const { promisify } = require('util');
-const { AuthenticationContext } = require('adal-node');
+const {promisify} = require('util');
+const {AuthenticationContext} = require('adal-node');
 const activeDirectoryEndpoint = 'https://login.microsoftonline.com/';
 const isDocker = require('../is-docker');
 const pjson = require('../../package.json');
@@ -13,8 +13,7 @@ const pjson = require('../../package.json');
 const DEFAULT_ENCODING = 'utf8';
 
 module.exports = async (args, options, logger) => {
-
-    const { serviceAccount, namespace } = options;
+    const {serviceAccount, namespace} = options;
     logger.info('Encryption started...');
     logger.info('service account:', serviceAccount);
     logger.info('namespace:', namespace);
@@ -25,8 +24,7 @@ module.exports = async (args, options, logger) => {
         let token = null;
         if (!useAuth(options)) {
             logger.warn('Auth options were not provided, will try to encrypt without authentication to kamus');
-        }
-        else {
+        } else {
             token = await acquireToken(options, logger);
         }
         const encryptedSecret = await encrypt(options, logger, token);
@@ -34,8 +32,7 @@ module.exports = async (args, options, logger) => {
         logger.info(`Successfully encrypted data to ${serviceAccount} service account in ${namespace} namespace`);
         outputEncryptedSecret(encryptedSecret, options, logger);
         process.exit(0);
-    }
-    catch (err) {
+    } catch (err) {
         logger.error('Error while trying to encrypt with kamus:', err.message);
         process.exit(1);
     }
@@ -43,24 +40,35 @@ module.exports = async (args, options, logger) => {
 
 const warnAboutNewLines = (secret, logger) => {
     const eolIndex = secret.indexOf(os.EOL);
-    
+
     if (eolIndex !== -1) {
         logger.warn(`Secret contains newlines at index ${eolIndex}. Is this intentional?`);
     }
 };
 
-const encrypt = async ({ secret, secretFile, serviceAccount, namespace, kamusUrl, certFingerprint, fileEncoding }, logger, token = null) => {
+const encrypt = async (
+    {secret, secretFile, serviceAccount, namespace, kamusUrl, certFingerprint, fileEncoding},
+    logger,
+    token = null
+) => {
     // eslint-disable-next-line security/detect-non-literal-fs-filename
-    const data = secretFile ? fs.readFileSync(secretFile, { encoding: fileEncoding || DEFAULT_ENCODING }) : secret;
+    const data = secretFile ? fs.readFileSync(secretFile, {encoding: fileEncoding || DEFAULT_ENCODING}) : secret;
     warnAboutNewLines(data, logger);
-    const response = await performEncryptRequestAsync(data, serviceAccount, namespace, kamusUrl, certFingerprint, token);
+    const response = await performEncryptRequestAsync(
+        data,
+        serviceAccount,
+        namespace,
+        kamusUrl,
+        certFingerprint,
+        token
+    );
     if (response && response.statusCode >= 300) {
         throw new Error(`Encrypt request failed due to unexpected error. Status code: ${response.statusCode}`);
     }
     return response.body;
 };
 
-const validateArguments = ({ secret, secretFile, kamusUrl, allowInsecureUrl }) => {
+const validateArguments = ({secret, secretFile, kamusUrl, allowInsecureUrl}) => {
     if (!secret && !secretFile) {
         throw new Error('Neither secret nor secret-file options were set.');
     }
@@ -74,33 +82,42 @@ const validateArguments = ({ secret, secretFile, kamusUrl, allowInsecureUrl }) =
     }
 };
 
-const acquireToken = async ({ authTenant, authApplication, authResource }, logger) => {
+const acquireToken = async ({authTenant, authApplication, authResource}, logger) => {
     const context = new AuthenticationContext(`${activeDirectoryEndpoint}${authTenant}`);
     bluebird.promisifyAll(context);
     const refreshToken = await acquireTokenWithDeviceCode(context, authApplication, authResource, logger);
-    const refreshTokenResponse =
-        await context.acquireTokenWithRefreshTokenAsync(refreshToken, authApplication, null, authResource);
+    const refreshTokenResponse = await context.acquireTokenWithRefreshTokenAsync(
+        refreshToken,
+        authApplication,
+        null,
+        authResource
+    );
     return refreshTokenResponse.accessToken;
 };
 
 const acquireTokenWithDeviceCode = async (context, authApplication, authResource, logger) => {
     const userCodeResult = await context.acquireUserCodeAsync(authResource, authApplication, 'en');
     await outputUserCodeInstructions(userCodeResult, logger);
-    const deviceCodeResult =
-        await context.acquireTokenWithDeviceCodeAsync(authResource, authApplication, userCodeResult);
+    const deviceCodeResult = await context.acquireTokenWithDeviceCodeAsync(
+        authResource,
+        authApplication,
+        userCodeResult
+    );
     return deviceCodeResult.refreshToken;
 };
 
 const outputUserCodeInstructions = async (userCodeResult, logger) => {
     if (isDocker()) {
-        logger.info(`Login to https://microsoft.com/devicelogin Enter this code to authenticate: ${userCodeResult.userCode}`);
+        logger.info(
+            `Login to https://microsoft.com/devicelogin Enter this code to authenticate: ${userCodeResult.userCode}`
+        );
     } else {
         opn(userCodeResult.verificationUrl);
         logger.info(`Enter this code to authenticate: ${userCodeResult.userCode}`);
     }
 };
 
-const useAuth = ({ authTenant, authApplication, authResource }) => {
+const useAuth = ({authTenant, authApplication, authResource}) => {
     if (authTenant && authApplication && authResource) {
         return true;
     }
@@ -114,11 +131,13 @@ const performEncryptRequest = (data, serviceAccount, namespace, kamusUrl, certif
         'Content-Type': 'application/json',
     };
 
-    const authHeaders = token ? {
-        Authorization: `Bearer ${token}`,
-    } : {};
+    const authHeaders = token
+        ? {
+              Authorization: `Bearer ${token}`,
+          }
+        : {};
 
-    const headers = { ...headersBase, ...authHeaders };
+    const headers = {...headersBase, ...authHeaders};
 
     const options = {
         url: `${kamusUrl}/api/v1/encrypt`,
@@ -134,24 +153,31 @@ const performEncryptRequest = (data, serviceAccount, namespace, kamusUrl, certif
         socket.on('secureConnect', () => {
             const fingerprint = socket.getPeerCertificate().fingerprint;
             // Match the fingerprint with our saved fingerprints
-            if(certificateFingerprint !== undefined && certificateFingerprint !== fingerprint) {
-            // Abort request, optionally emit an error event
-                req.emit('error', new Error(`Server fingerprint ${fingerprint} does not match provided fingerprint ${certificateFingerprint}`));
+            if (certificateFingerprint !== undefined && certificateFingerprint !== fingerprint) {
+                // Abort request, optionally emit an error event
+                req.emit(
+                    'error',
+                    new Error(
+                        `Server fingerprint ${fingerprint} does not match provided fingerprint ${certificateFingerprint}`
+                    )
+                );
                 return req.abort();
             }
         });
     });
 
-    req.write(JSON.stringify({
-        data,
-        ['service-account']: serviceAccount,
-        namespace,
-    }));
+    req.write(
+        JSON.stringify({
+            data,
+            ['service-account']: serviceAccount,
+            namespace,
+        })
+    );
 };
 
 const performEncryptRequestAsync = promisify(performEncryptRequest);
 
-const outputEncryptedSecret = (encryptedSecret, { outputFile, overwrite, fileEncoding }, logger) => {
+const outputEncryptedSecret = (encryptedSecret, {outputFile, overwrite, fileEncoding}, logger) => {
     if (outputFile) {
         // eslint-disable-next-line security/detect-non-literal-fs-filename
         fs.writeFileSync(outputFile, encryptedSecret, {
@@ -159,8 +185,7 @@ const outputEncryptedSecret = (encryptedSecret, { outputFile, overwrite, fileEnc
             flag: overwrite ? 'w' : 'wx',
         });
         logger.info(`Encrypted data was saved to ${outputFile}.`);
-    }
-    else {
+    } else {
         logger.info(`Encrypted data:\n${encryptedSecret}`);
     }
 };

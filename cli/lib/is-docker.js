@@ -3,30 +3,30 @@ const fs = require('fs');
 let isDocker;
 
 function hasDockerEnv() {
-	try {
-		fs.statSync('/.dockerenv');
-		return true;
-	} catch (err) {
-		return false;
-	}
+    try {
+        fs.statSync('/.dockerenv');
+        return true;
+    } catch (err) {
+        return false;
+    }
 }
 
 function hasDockerCGroup() {
-	try {
-		return fs.readFileSync('/proc/self/cgroup', 'utf8').indexOf('docker') !== -1;
-	} catch (err) {
-		return false;
-	}
+    try {
+        return fs.readFileSync('/proc/self/cgroup', 'utf8').indexOf('docker') !== -1;
+    } catch (err) {
+        return false;
+    }
 }
 
 function check() {
-	return hasDockerEnv() || hasDockerCGroup();
+    return hasDockerEnv() || hasDockerCGroup();
 }
 
-module.exports = function () {
-	if (isDocker === undefined) {
-		isDocker = check();
-	}
+module.exports = function() {
+    if (isDocker === undefined) {
+        isDocker = check();
+    }
 
-	return isDocker;
+    return isDocker;
 };

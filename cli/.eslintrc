@@ -3,33 +3,14 @@
         "browser": false,
         "node": true
     },
-    "extends": [
-        "eslint:recommended",
-        "plugin:security/recommended",
-        "prettier"
-    ],
+    "extends": ["eslint:recommended", "plugin:security/recommended", "prettier"],
     "parserOptions": {
-        "ecmaVersion":  2018
+        "ecmaVersion": 2018
     },
-    "plugins": [
-        "security"
-    ],
+    "plugins": ["security"],
     "rules": {
-        "linebreak-style": [
-            "off",
-            "windows"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
-        "no-console": [
-            "off"
-        ]
+        "linebreak-style": ["off", "windows"],
+        "no-console": ["off"]
     },
     "globals": {
         "it": true,
