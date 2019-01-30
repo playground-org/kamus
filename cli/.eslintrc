@@ -5,7 +5,8 @@
     },
     "extends": [
         "eslint:recommended",
-        "plugin:security/recommended"
+        "plugin:security/recommended",
+        "prettier"
     ],
     "parserOptions": {
         "ecmaVersion":  2018
