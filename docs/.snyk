@@ -1,0 +1,44 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.13.5
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-450202:
+    - spectacle-docs > node-sass > sass-graph > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - spectacle-docs > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - spectacle-docs > grunt-contrib-watch > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - spectacle-docs > grunt-contrib-watch > async > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - wintersmith > winston > async > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - spectacle-docs > grunt > grunt-legacy-util > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - spectacle-docs > grunt > grunt-legacy-log > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - spectacle-docs > handlebars > async > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - spectacle-docs > json-refs > graphlib > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - wintersmith > async > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - spectacle-docs > grunt-contrib-jshint > jshint > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - spectacle-docs > node-sass > gaze > globule > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - spectacle-docs > grunt-contrib-handlebars > handlebars > async > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - spectacle-docs > grunt > grunt-legacy-log > grunt-legacy-log-utils > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - spectacle-docs > grunt-compile-handlebars > handlebars > async > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - spectacle-docs > grunt-contrib-watch > gaze > globule > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - wintersmith > pug > pug-code-gen > constantinople > babel-types > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - wintersmith > pug > pug-filters > constantinople > babel-types > lodash:
+        patched: '2019-07-04T06:49:55.504Z'
+    - wintersmith > pug > pug-code-gen > pug-attrs > constantinople > babel-types > lodash:
+        patched: '2019-07-04T06:49:55.504Z'

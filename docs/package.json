@@ -7,10 +7,14 @@
     "featurebook": "^0.0.32",
     "spectacle-docs": "^1.0.6",
     "wintersmith": "^2.5.0",
-    "wintersmith-gherkin": "^0.1.1"
+    "wintersmith-gherkin": "^0.1.1",
+    "snyk": "^1.189.0"
   },
   "scripts": {
     "feature-book": "featurebook html features/",
-    "wintersmith": "wintersmith"
-  }
+    "wintersmith": "wintersmith",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
