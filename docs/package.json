@@ -5,7 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "featurebook": "^0.0.32",
-    "spectacle-docs": "^1.0.6",
+    "spectacle-docs": "^1.0.7",
     "wintersmith": "^2.5.0",
     "wintersmith-gherkin": "^0.1.1"
   },
